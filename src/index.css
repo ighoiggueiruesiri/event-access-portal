@@ -1,0 +1,89 @@
+/*
+  Every @import must come before any other rule. Tailwind expands into real
+  rules, so the Google Fonts import has to sit ABOVE @import "tailwindcss".
+  (Having it below is what caused the [postcss] @import error.)
+*/
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Pinyon+Script&family=Inter:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'Playfair Display', serif;
+  --font-script: 'Pinyon Script', cursive;
+}
+
+body {
+  margin: 0;
+  background: #0d0503;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-script {
+  font-size: 1.65rem;
+  line-height: 1.2;
+}
+
+/* ---- Ticket notches: real cut-outs, so the background shows through ---- */
+.notch-bottom,
+.notch-top {
+  --r: 14px;
+}
+.notch-bottom {
+  -webkit-mask:
+    radial-gradient(circle var(--r) at 0 100%, #0000 calc(100% - 1px), #000) left / 51% 100% no-repeat,
+    radial-gradient(circle var(--r) at 100% 100%, #0000 calc(100% - 1px), #000) right / 51% 100% no-repeat;
+  mask:
+    radial-gradient(circle var(--r) at 0 100%, #0000 calc(100% - 1px), #000) left / 51% 100% no-repeat,
+    radial-gradient(circle var(--r) at 100% 100%, #0000 calc(100% - 1px), #000) right / 51% 100% no-repeat;
+}
+.notch-top {
+  -webkit-mask:
+    radial-gradient(circle var(--r) at 0 0, #0000 calc(100% - 1px), #000) left / 51% 100% no-repeat,
+    radial-gradient(circle var(--r) at 100% 0, #0000 calc(100% - 1px), #000) right / 51% 100% no-repeat;
+  mask:
+    radial-gradient(circle var(--r) at 0 0, #0000 calc(100% - 1px), #000) left / 51% 100% no-repeat,
+    radial-gradient(circle var(--r) at 100% 0, #0000 calc(100% - 1px), #000) right / 51% 100% no-repeat;
+}
+
+/* ---- Light sweep across the chocolate half ---- */
+@keyframes sheen {
+  0%        { transform: translateX(-140%) skewX(-20deg); }
+  55%, 100% { transform: translateX(300%) skewX(-20deg); }
+}
+.sheen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: 35%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.16), transparent);
+  animation: sheen 6s ease-in-out 1.6s infinite;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* ---- Slow drifting ambient glow ---- */
+@keyframes drift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50%      { transform: translate3d(40px, -30px, 0) scale(1.12); }
+}
+.drift      { animation: drift 14s ease-in-out infinite; }
+.drift-slow { animation: drift 20s ease-in-out infinite reverse; }
+
+/* ---- Film grain for a tactile cocoa surface ---- */
+.grain::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.09;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheen::after,
+  .drift,
+  .drift-slow {
+    animation: none;
+  }
+}
